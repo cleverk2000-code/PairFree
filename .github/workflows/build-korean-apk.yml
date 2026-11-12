@@ -1,0 +1,51 @@
+name: Build Korean APK
+
+on:
+  push:
+    branches:
+      - main
+      - feat/korean-localization
+    paths:
+      - "android/**"
+      - ".github/workflows/build-korean-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ''
+      - name: Install Android 37 SDK
+        run: |
+          sdkmanager --install "platforms;android-37.0" "build-tools;37.0.0" --channel=3
+          if [ -d "$ANDROID_HOME/platforms/android-37.0" ] && [ ! -e "$ANDROID_HOME/platforms/android-37" ]; then
+            ln -s android-37.0 "$ANDROID_HOME/platforms/android-37"
+          fi
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build installable Korean development APK
+        working-directory: android
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :app:assembleDev --no-daemon --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PairFree-Korean-dev-APK
+          path: android/app/build/outputs/apk/dev/*.apk
+          if-no-files-found: error
+          retention-days: 30
