@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/korean-localization
     paths:
       - "android/**"
       - ".github/workflows/build-korean-apk.yml"
@@ -37,15 +36,15 @@ jobs:
           fi
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Build installable Korean development APK
+      - name: Build installable Korean PairFree APK
         working-directory: android
         run: |
           chmod +x ./gradlew
-          ./gradlew :app:assembleDev --no-daemon --stacktrace
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: PairFree-Korean-dev-APK
-          path: android/app/build/outputs/apk/dev/*.apk
+          name: PairFree-Korean-APK
+          path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 30
