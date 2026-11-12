@@ -7,6 +7,12 @@ on:
     paths:
       - "android/**"
       - ".github/workflows/build-korean-apk.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "android/**"
+      - ".github/workflows/build-korean-apk.yml"
   workflow_dispatch:
 
 permissions:
