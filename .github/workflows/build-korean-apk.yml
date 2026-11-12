@@ -29,7 +29,9 @@ jobs:
         run: |
           # Ubuntu GitHub runners already include Android command-line tools.
           # Avoid setup-android, which attempts to install the removed "tools" package.
-          sdkmanager --install "platforms;android-37" "build-tools;37.0.0"
+          SDK_MANAGER="/usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager"
+          test -x "$SDK_MANAGER"
+          "$SDK_MANAGER" --install "platforms;android-37" "build-tools;37.0.0"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Build installable Korean development APK
